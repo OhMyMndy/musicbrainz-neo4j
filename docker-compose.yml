@@ -1,0 +1,40 @@
+services:
+
+  postgres:
+    image: postgres:16.1
+    env_file:
+      - .env
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql
+      - shared_data:/shared
+
+  neo4j:
+    image: neo4j:5.15-community
+    ports:
+      - 7474:7474
+      - 7687:7687
+    env_file:
+      - .env
+    volumes:
+      - neo4j_data:/data
+      - shared_data:/shared
+
+  ubuntu:
+    # image: alpine
+    build:
+      context: ./docker/ubuntu
+    command: sh -c 'while sleep 3600; do :; done'
+    env_file:
+      - .env
+    volumes:
+      - ./docker/ubuntu/scripts:/scripts
+      - shared_data:/shared
+    
+
+
+volumes:
+  postgres_data:
+  neo4j_data:
+  shared_data:
